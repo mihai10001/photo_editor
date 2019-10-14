@@ -1,6 +1,7 @@
 import os
 from flask import Flask, Blueprint, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
+from pillow import apply_blur
 
 UPLOAD_FOLDER = os.getcwd() + '/static'
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
@@ -9,6 +10,16 @@ INPUT_FILENAME = ''
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 bp = Blueprint('photo_editor', __name__, template_folder='templates', static_folder='static', static_url_path='/static')
+
+
+# So preview refreshes with any new change
+@app.after_request
+def add_header(response):
+    # response.cache_control.no_store = True
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 
 def allowed_file(filename):
@@ -21,9 +32,9 @@ def home():
     global INPUT_FILENAME
 
     if request.method == 'POST':
-        button = request.form.get('submit_button')
+        submit_button = request.form.get('submit_button')
 
-        if button == 'upload_image':
+        if submit_button == 'upload_image':
             # check if the post request has the file part
             if 'file' not in request.files:
                 return redirect(request.url)
@@ -36,7 +47,7 @@ def home():
 
             if file and allowed_file(file.filename):
                 INPUT_FILENAME = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], INPUT_FILENAME))
+                file.save(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
                 return redirect(url_for('photo_editor.uploaded'))
 
         # elif button == 'download_image':
@@ -51,9 +62,21 @@ def home():
 
 @bp.route('/uploaded', methods=['GET', 'POST'])
 def uploaded():
-    global INPUT_FILENAME
+
+    if request.method == 'POST':
+        blur_button = request.form.get('blur_button')
+
+        if blur_button:
+            apply_blur(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), blur_button)
+
+            return redirect(url_for('photo_editor.uploaded'))
+        else:
+            return render_template('home.html')
+
     if INPUT_FILENAME:
         return render_template('home.html', filename=INPUT_FILENAME)
+    else:
+        return render_template('home.html')
 
 
 app.register_blueprint(bp, url_prefix='/photo_editor')

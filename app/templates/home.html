@@ -64,11 +64,36 @@
             <div class="card-body mx-auto">
               {% if filename %}
                 <div class="text-success"><b>Image uploaded succesfully: {{ filename }}</b></div>
-                <div class="my-2">
+                <div class="my-2"></div>
                 <img src="{{url_for('static', filename=filename)}}" class="rounded" style="max-width: 400px" />
               {% else %}
                 <div>No image uploaded yet !</div>
               {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row my-3">
+         <div class="col-sm-12">
+          <div class="card h5">
+            <div class="card-header"><b>Apply filters</b></div>
+            <a href="#demo" class="btn btn-dark" data-toggle="collapse" style="margin: 1.25rem"><b>Open / Close</b></a>
+            <div class="card-body collapse" id="demo">
+
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                <div class="h5">Blur</div>
+                <form method="POST">
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="submit" name="blur_button" value="0" class="btn btn-secondary">Blur</button>
+                    <button type="submit" name="blur_button" value="1" class="btn btn-secondary">BoxBlur(1)</button>
+                    <button type="submit" name="blur_button" value="2" class="btn btn-secondary">GaussianBlur</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
             </div>
           </div>
         </div>
