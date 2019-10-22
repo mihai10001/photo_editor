@@ -1,11 +1,13 @@
 import os
 from flask import Flask, Blueprint, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
+from pillow import load_image, get_default_slider, apply_enhancers
 from pillow import apply_blur, apply_sharpen, apply_edge_enhance, apply_smooth
 
 UPLOAD_FOLDER = os.getcwd() + '/static'
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
 INPUT_FILENAME = ''
+image, slider = None, None
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -29,7 +31,7 @@ def add_header(response):
 
 @bp.route('/', methods=['GET', 'POST'])
 def home():
-    global INPUT_FILENAME
+    global INPUT_FILENAME, image, slider
 
     if request.method == 'POST':
         submit_button = request.form.get('submit_button')
@@ -48,6 +50,8 @@ def home():
             if file and allowed_file(file.filename):
                 INPUT_FILENAME = secure_filename(file.filename)
                 file.save(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
+                image = load_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
+                slider = get_default_slider()
                 return redirect(url_for('photo_editor.uploaded'))
 
         # elif button == 'download_image':
@@ -62,12 +66,19 @@ def home():
 
 @bp.route('/uploaded', methods=['GET', 'POST'])
 def uploaded():
+    global image, slider
 
     if request.method == 'POST':
+        enhance_button = request.form.get('enhance_button')
+
         blur_button = request.form.get('blur_button')
         sharpen_button = request.form.get('sharpen_button')
         edge_button = request.form.get('edge_button')
         smooth_button = request.form.get('smooth_button')
+
+        if enhance_button:
+            slider = {key: float(request.form.get(key)) for key, value in slider.items()}
+            apply_enhancers(image, os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), slider)
 
         if blur_button:
             apply_blur(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), blur_button)
@@ -77,11 +88,14 @@ def uploaded():
             apply_edge_enhance(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), edge_button)
         elif smooth_button:
             apply_smooth(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), smooth_button)
+        if any([blur_button, sharpen_button, edge_button, smooth_button]):
+            image = load_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
+            slider = get_default_slider()
 
     if INPUT_FILENAME:
-        return render_template('home.html', filename=INPUT_FILENAME)
+        return render_template('uploaded.html', slider=slider, filename=INPUT_FILENAME)
     else:
-        return render_template('home.html')
+        return render_template('uploaded.html', slider=slider)
 
 
 app.register_blueprint(bp, url_prefix='/photo_editor')

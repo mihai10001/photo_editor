@@ -59,92 +59,19 @@
               <div>Only .png .jpg .jpeg file types allowed for now</div>
               <hr class="my-3">
               <form method="POST" enctype="multipart/form-data">
-                <input name="file" type="file">
-                <button type="submit" name="submit_button" value="upload_image" class="btn btn-dark w-50 float-right"><b>Upload</b></button>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <input name="file" type="file">
+                  </div>
+                  <div class="col-sm-12">
+                    <button type="submit" name="submit_button" value="upload_image" class="btn btn-block btn-dark"><b>Upload</b></button>
+                  </div>
+                </div>
               </form>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="row my-3">
-        <div class="col-sm-12">
-          <div class="card h5">
-            <div class="card-header"><b>Preview</b></div>
-            <div class="card-body mx-auto">
-              {% if filename %}
-                <div class="text-success"><b>Image uploaded succesfully: {{ filename }}</b></div>
-                <div class="my-2"></div>
-                <img src="{{url_for('static', filename=filename)}}" class="rounded" style="max-width: 400px" />
-              {% else %}
-                <div>No image uploaded yet !</div>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row my-3">
-         <div class="col-sm-12">
-          <div class="card h5">
-            <div class="card-header"><b>Apply filters</b></div>
-            <a href="#demo" class="btn btn-dark" data-toggle="collapse" style="margin: 1.25rem"><b>Open / Close</b></a>
-            <div class="card-body collapse" id="demo">
-
-            <div class="row">
-              <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
-                <div class="h5">Blur</div>
-                <form method="POST">
-                  <div class="btn-group btn-group-sm" role="group">
-                    <button type="submit" name="blur_button" value="0" class="btn btn-secondary">Blur</button>
-                    <button type="submit" name="blur_button" value="1" class="btn btn-secondary">BoxBlur(1)</button>
-                    <button type="submit" name="blur_button" value="2" class="btn btn-secondary">GaussianBlur</button>
-                  </div>
-                </form>
-              </div>
-
-              <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
-                <div class="h5">Sharpen</div>
-                <form method="POST">
-                  <div class="btn-group btn-group-sm" role="group">
-                    <button type="submit" name="sharpen_button" value="0" class="btn btn-sm btn-secondary">Sharpen</button>
-                    <button type="submit" name="sharpen_button" value="1" class="btn btn-sm btn-secondary">Detail</button>
-                    <button type="submit" name="sharpen_button" value="2" class="btn btn-sm btn-secondary">UnsharpMask</button>
-                  </div>
-                </form>
-              </div>
-
-              <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
-                <div class="h5">Edge Enhance</div>
-                <form method="POST">
-                  <div class="btn-group btn-group-sm" role="group">
-                    <button type="submit" name="edge_button" value="0" class="btn btn-sm btn-secondary">EdgeEnhance</button>
-                    <button type="submit" name="edge_button" value="1" class="btn btn-sm btn-secondary">EdgeEnhMore</button>
-                  </div>
-                  <div class="btn-group btn-group-sm my-1" role="group">
-                    <button type="submit" name="edge_button" value="2" class="btn btn-sm btn-secondary">Emboss</button>
-                    <button type="submit" name="edge_button" value="3" class="btn btn-sm btn-secondary">FindEdges</button>
-                    <button type="submit" name="edge_button" value="4" class="btn btn-sm btn-secondary">Contour</button>
-                  </div>
-                </form>
-              </div>
-
-              <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
-                <div class="h5">Smooth</div>
-                <form method="POST">
-                  <div class="btn-group btn-group-sm" role="group">
-                    <button type="submit" name="smooth_button" value="0" class="btn btn-secondary">Smooth</button>
-                    <button type="submit" name="smooth_button" value="1" class="btn btn-secondary">SmoothMore</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-
-            </div>
-          </div>
-        </div>
-      </div>
-
 
     </div>
 

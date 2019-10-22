@@ -1,4 +1,4 @@
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageEnhance
 
 
 def load_image(image_path):
@@ -7,6 +7,24 @@ def load_image(image_path):
         return image
     except Exception as e:
         print('Unable to load image')
+
+
+def get_default_slider():
+    return {'color': 1, 'bright': 1, 'contrast': 1, 'sharp': 1}
+
+
+# ENHANCERS
+def apply_enhancers(image, image_path, slider):
+    colorer = ImageEnhance.Color(image)
+    image = colorer.enhance(slider['color'])
+    brighter = ImageEnhance.Brightness(image)
+    image = brighter.enhance(slider['bright'])
+    contraster = ImageEnhance.Contrast(image)
+    image = contraster.enhance(slider['contrast'])
+    sharper = ImageEnhance.Sharpness(image)
+    image = sharper.enhance(slider['sharp'])
+
+    image.save(image_path)
 
 
 # BLUR
