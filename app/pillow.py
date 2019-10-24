@@ -13,6 +13,10 @@ def get_default_slider():
     return {'color': 1, 'bright': 1, 'contrast': 1, 'sharp': 1}
 
 
+def get_image_size(image):
+    return image.width, image.height
+
+
 # ENHANCERS
 def apply_enhancers(image, image_path, slider):
     colorer = ImageEnhance.Color(image)
@@ -82,4 +86,11 @@ def apply_smooth(image_path, options):
     elif options == "1":
         image = image.filter(ImageFilter.SMOOTH_MORE)
 
+    image.save(image_path)
+
+
+# RESIZE
+def resize_image(image_path, width, height):
+    image = load_image(image_path)
+    image = image.resize((width, height), Image.BICUBIC)
     image.save(image_path)
