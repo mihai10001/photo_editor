@@ -59,7 +59,7 @@
               {% if filename %}
                 <small class="text-success"><b>Image uploaded succesfully:<br>{{ filename }}</b></small>
                 <div class="my-2"></div>
-                <img src="{{url_for('static', filename=filename)}}" class="rounded" style="max-width: 230px; max-height: 150px" />
+                <img src="{{url_for('static', filename=filename)}}" class="rounded" style="max-width: 100%" />
               {% else %}
                 <div>No image uploaded yet !</div>
               {% endif %}
@@ -126,6 +126,7 @@
                 <button type="submit" name="enhance_button" value="enhance" class="btn btn-block btn-dark mt-2"><b>Apply</b></button>
               </form>
             </div>
+
           </div>
         </div>
       </div>
@@ -138,7 +139,7 @@
             <div class="card-body collapse" id="demo1">
 
               <div class="row">
-                <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
+                <div class="col-sm-5 mx-auto my-2 p-2 text-center stripes rounded">
                   <div class="h5">Blur</div>
                   <form method="POST">
                     <div class="btn-group btn-group-sm" role="group">
@@ -149,7 +150,7 @@
                   </form>
                 </div>
 
-                <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
+                <div class="col-sm-5 mx-auto my-2 p-2 text-center stripes rounded">
                   <div class="h5">Sharpen</div>
                   <form method="POST">
                     <div class="btn-group btn-group-sm" role="group">
@@ -160,7 +161,7 @@
                   </form>
                 </div>
 
-                <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
+                <div class="col-sm-5 mx-auto my-2 p-2 text-center stripes rounded">
                   <div class="h5">Edge Enhance</div>
                   <form method="POST">
                     <div class="btn-group btn-group-sm" role="group">
@@ -175,7 +176,7 @@
                   </form>
                 </div>
 
-                <div class="col-sm-5 mx-auto my-2 p-3 text-center stripes rounded">
+                <div class="col-sm-5 mx-auto my-2 p-2 text-center stripes rounded">
                   <div class="h5">Smooth</div>
                   <form method="POST">
                     <div class="btn-group btn-group-sm" role="group">
@@ -194,39 +195,74 @@
       <div class="row my-3">
         <div class="col-sm-12">
           <div class="card h5">
-            <div class="card-header"><b>Resize / Crop</b></div>
+            <div class="card-header"><b>Rotate / Resize / Crop</b></div>
             <a href="#demo2" class="btn btn-dark" data-toggle="collapse" style="margin: 1.25rem"><b>Open / Close</b></a>
             <div class="card-body collapse mx-auto" id="demo2">
 
               {% if filename %}
-                <small class="text-success"><b>Your image file size is:<br>({{ width }}, {{ height}})</b></small>
+                <small class="text-success"><b>Your image size is:<br>({{ width }}, {{ height}})</b></small>
               {% else %}
                 <div>No image uploaded yet !</div>
               {% endif %}
 
               <div class="row">
-                <div class="col-sm-12 mx-auto my-2 p-3 text-center stripes rounded">
+                <div class="col-sm-12 mx-auto my-2 p-2 text-center stripes rounded">
                   <form method="POST">
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-2">
                       <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Width</span>
+                        <span class="input-group-text">Angle</span>
                       </div>
-                      <input type="text" class="form-control" name="width" placeholder="width" aria-label="width" aria-describedby="basic-addon1">
+                      <input type="text" class="form-control" name="angle" placeholder="angle">
                     </div>
 
-                    <div class="input-group mb-3">
+                    <button type="submit" name="rotate_button" value="rotate" class="btn btn-primary btn-block"><b>Rotate</b></button>
+                  </form>
+                </div>
+
+                <div class="col-sm-12 mx-auto my-2 p-2 text-center stripes rounded">
+                  <form method="POST">
+                    <div class="input-group mb-2">
                       <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Height</span>
+                        <span class="input-group-text">Width</span>
                       </div>
-                      <input type="text" class="form-control" name="height" placeholder="height" aria-label="height" aria-describedby="basic-addon1">
+                      <input type="text" class="form-control" name="width" placeholder="width">
+                    </div>
+
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">Height</span>
+                      </div>
+                      <input type="text" class="form-control" name="height" placeholder="height">
                     </div>
 
                     <button type="submit" name="resize_button" value="resize" class="btn btn-primary btn-block"><b>Resize</b></button>
                   </form>
                 </div>
-              </div>
 
+                <div class="col-sm-12 mx-auto my-2 p-2 text-center stripes rounded">
+                  <form method="POST">
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="">Start coords.</span>
+                      </div>
+                      <input type="text" name="start_x" class="form-control" placeholder="x">
+                      <input type="text" name="start_y" class="form-control" placeholder="y">
+                    </div>
+
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" id="">End coords.</span>
+                      </div>
+                      <input type="text" name="start_x" class="form-control" placeholder="x + w">
+                      <input type="text" name="start_y" class="form-control" placeholder="y + h">
+                    </div>
+
+                    <button type="submit" name="crop_button" value="crop" class="btn btn-primary btn-block"><b>Crop</b></button>
+                  </form>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
       </div>

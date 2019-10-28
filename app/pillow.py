@@ -89,6 +89,13 @@ def apply_smooth(image_path, options):
     image.save(image_path)
 
 
+# ROTATE
+def rotate_image(image_path, angle):
+    image = load_image(image_path)
+    image = image.rotate(angle)
+    image.save(image_path)
+
+
 # RESIZE
 def resize_image(image_path, width, height):
     image = load_image(image_path)

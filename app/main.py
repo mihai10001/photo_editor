@@ -3,7 +3,7 @@ from flask import Flask, Blueprint, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from pillow import load_image, get_default_slider, apply_enhancers
 from pillow import apply_blur, apply_sharpen, apply_edge_enhance, apply_smooth
-from pillow import get_image_size, resize_image
+from pillow import get_image_size, rotate_image, resize_image
 
 UPLOAD_FOLDER = os.getcwd() + '/static'
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
@@ -84,6 +84,7 @@ def uploaded():
         edge_button = request.form.get('edge_button')
         smooth_button = request.form.get('smooth_button')
 
+        rotate_button = request.form.get('rotate_button')
         resize_button = request.form.get('resize_button')
 
         if enhance_button:
@@ -99,12 +100,15 @@ def uploaded():
         elif smooth_button:
             apply_smooth(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), smooth_button)
 
-        if resize_button:
+        if rotate_button:
+            angle = int(request.form.get('angle'))
+            rotate_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), angle)
+        elif resize_button:
             n_width = int(request.form.get('width'))
             n_height = int(request.form.get('height'))
             resize_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), n_width, n_height)
 
-        if any([blur_button, sharpen_button, edge_button, smooth_button, resize_button]):
+        if any([blur_button, sharpen_button, edge_button, smooth_button, rotate_button, resize_button]):
             refresh_parameters(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
 
     if INPUT_FILENAME:
