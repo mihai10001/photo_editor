@@ -101,3 +101,10 @@ def resize_image(image_path, width, height):
     image = load_image(image_path)
     image = image.resize((width, height), Image.BICUBIC)
     image.save(image_path)
+
+
+# CROP
+def crop_image(image_path, start_x, start_y, end_x, end_y):
+    image = load_image(image_path)
+    image = image.crop((start_x, start_y, end_x, end_y))
+    image.save(image_path)

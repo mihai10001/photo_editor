@@ -25,7 +25,8 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.css">
 
     <title>Simple Photo Editor</title>
   </head>
@@ -59,7 +60,7 @@
               {% if filename %}
                 <small class="text-success"><b>Image uploaded succesfully:<br>{{ filename }}</b></small>
                 <div class="my-2"></div>
-                <img src="{{url_for('static', filename=filename)}}" class="rounded" style="max-width: 100%" />
+                <img src="{{url_for('static', filename=filename)}}" class="rounded" style="max-width: 100%"/>
               {% else %}
                 <div>No image uploaded yet !</div>
               {% endif %}
@@ -240,21 +241,27 @@
                 </div>
 
                 <div class="col-sm-12 mx-auto my-2 p-2 text-center stripes rounded">
+                  {% if filename %}
+                    <img src="{{url_for('static', filename=filename)}}" class="rounded" style="max-width: 100%" id="cropper"/>
+                    <div class="my-2"></div>
+                  {% else %}
+                    <div>No image uploaded yet !</div>
+                  {% endif %}
                   <form method="POST">
                     <div class="input-group mb-2">
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="">Start coords.</span>
                       </div>
-                      <input type="text" name="start_x" class="form-control" placeholder="x">
-                      <input type="text" name="start_y" class="form-control" placeholder="y">
+                      <input type="text" name="start_x" class="form-control" placeholder="x" id="start_x" readonly>
+                      <input type="text" name="start_y" class="form-control" placeholder="y" id="start_y" readonly>
                     </div>
 
                     <div class="input-group mb-2">
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="">End coords.</span>
                       </div>
-                      <input type="text" name="start_x" class="form-control" placeholder="x + w">
-                      <input type="text" name="start_y" class="form-control" placeholder="y + h">
+                      <input type="text" name="end_x" class="form-control" placeholder="x + w" id="end_x" readonly>
+                      <input type="text" name="end_y" class="form-control" placeholder="y + h" id="end_y" readonly>
                     </div>
 
                     <button type="submit" name="crop_button" value="crop" class="btn btn-primary btn-block"><b>Crop</b></button>
@@ -274,8 +281,8 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.6/cropper.min.js"></script>
     <script>
       function updateTextInput(id, val) {
           element = document.getElementById(id);
@@ -285,6 +292,25 @@
       updateTextInput('brightness_value', {{ slider['bright'] }});
       updateTextInput('contrast_value', {{ slider['contrast'] }});
       updateTextInput('sharpness_value', {{ slider['sharp'] }});
+    </script>
+    <script>
+      var image = document.getElementById('cropper');
+      var cropper = new Cropper(image, {
+        viewMode: 1,
+        background: false,
+        movable: false,
+        zoomable: false,
+        rotatable: false,
+        strict: true,
+        minContainerWidth: 240,
+        minContainerHeight: 125,
+        crop(event) {
+          document.getElementById("start_x").value = Math.round(event.detail.x);
+          document.getElementById("start_y").value = Math.round(event.detail.y);
+          document.getElementById("end_x").value = Math.round(event.detail.x + event.detail.width);
+          document.getElementById("end_y").value = Math.round(event.detail.y + event.detail.height);
+        },
+      });
     </script>
 
 </body>

@@ -3,7 +3,7 @@ from flask import Flask, Blueprint, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from pillow import load_image, get_default_slider, apply_enhancers
 from pillow import apply_blur, apply_sharpen, apply_edge_enhance, apply_smooth
-from pillow import get_image_size, rotate_image, resize_image
+from pillow import get_image_size, rotate_image, resize_image, crop_image
 
 UPLOAD_FOLDER = os.getcwd() + '/static'
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
@@ -86,6 +86,7 @@ def uploaded():
 
         rotate_button = request.form.get('rotate_button')
         resize_button = request.form.get('resize_button')
+        crop_button = request.form.get('crop_button')
 
         if enhance_button:
             slider = {key: float(request.form.get(key)) for key, value in slider.items()}
@@ -107,8 +108,14 @@ def uploaded():
             n_width = int(request.form.get('width'))
             n_height = int(request.form.get('height'))
             resize_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), n_width, n_height)
+        elif crop_button:
+            start_x = int(request.form.get('start_x'))
+            start_y = int(request.form.get('start_y'))
+            end_x = int(request.form.get('end_x'))
+            end_y = int(request.form.get('end_y'))
+            crop_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), start_x, start_y, end_x, end_y)
 
-        if any([blur_button, sharpen_button, edge_button, smooth_button, rotate_button, resize_button]):
+        if any([blur_button, sharpen_button, edge_button, smooth_button, rotate_button, resize_button, crop_button]):
             refresh_parameters(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
 
     if INPUT_FILENAME:
