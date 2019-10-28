@@ -30,7 +30,7 @@
 
     <title>Simple Photo Editor</title>
   </head>
-  <body class="bg-dark">
+  <body class="bg-dark p-2">
 
     <!-- <nav class="fixed-top shadow bg-dark border-bottom border-warning" style="border-color: slateblue">
       <div class="container my-3">
@@ -48,11 +48,11 @@
       </div>
     </nav> -->
 
-    <div class="container" style="height: 10%">
+    <div class="container" id="align" style="height: 10%">
     </div>
 
-    <div class="container p-2 rounded mb-3" style="background-color: slateblue">
-      <div class="row my-3">
+    <div class="container p-2 rounded" style="background-color: slateblue">
+      <div class="row my-2">
         <div class="col-sm-12">
           <div class="card h5">
             <div class="card-header"><b>Preview</b></div>
@@ -69,7 +69,7 @@
         </div>
       </div>
 
-      <div class="row my-3">
+      <div class="row my-2">
         <div class="col-sm-12">
           <div class="card h5">
             <div class="card-header"><b>Simple enhance</b></div>
@@ -132,7 +132,7 @@
         </div>
       </div>
 
-      <div class="row my-3">
+      <div class="row my-2">
         <div class="col-sm-12">
           <div class="card h5">
             <div class="card-header"><b>Apply filters</b></div>
@@ -193,7 +193,7 @@
         </div>
       </div>
 
-      <div class="row my-3">
+      <div class="row my-2">
         <div class="col-sm-12">
           <div class="card h5">
             <div class="card-header"><b>Rotate / Resize / Crop</b></div>
@@ -295,14 +295,15 @@
     </script>
     <script>
       var image = document.getElementById('cropper');
+      var image_allign = $("#align").width() - 18;
       var cropper = new Cropper(image, {
-        viewMode: 1,
+        viewMode: 2,
         background: false,
         movable: false,
         zoomable: false,
         rotatable: false,
         strict: true,
-        minContainerWidth: 240,
+        minContainerWidth: image_allign,
         minContainerHeight: 125,
         crop(event) {
           document.getElementById("start_x").value = Math.round(event.detail.x);
