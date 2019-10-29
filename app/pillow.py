@@ -1,4 +1,5 @@
 from PIL import Image, ImageFilter, ImageEnhance
+from shutil import copyfile
 
 
 def load_image(image_path):
@@ -7,6 +8,13 @@ def load_image(image_path):
         return image
     except Exception as e:
         print('Unable to load image')
+
+
+def dupe_image(image_path, options):
+    if options == 'copy':
+        copyfile(image_path, image_path + '.copy')
+    elif options == 'replace':
+        copyfile(image_path + '.copy', image_path)
 
 
 def get_default_slider():

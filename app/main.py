@@ -1,7 +1,7 @@
 import os
-from flask import Flask, Blueprint, render_template, request, redirect, url_for
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, send_file
 from werkzeug.utils import secure_filename
-from pillow import load_image, get_default_slider, apply_enhancers
+from pillow import load_image, dupe_image, get_default_slider, apply_enhancers
 from pillow import apply_blur, apply_sharpen, apply_edge_enhance, apply_smooth
 from pillow import get_image_size, rotate_image, resize_image, crop_image
 
@@ -58,15 +58,9 @@ def home():
             if file and allowed_file(file.filename):
                 INPUT_FILENAME = secure_filename(file.filename)
                 file.save(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
+                dupe_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), 'copy')
                 refresh_parameters(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
                 return redirect(url_for('photo_editor.uploaded'))
-
-        # elif button == 'download_image':
-        #     if INPUT_FILENAME:
-        #         OUTPUT_FILENAME =
-        #         return send_file(os.path.join(app.config['UPLOAD_FOLDER'], OUTPUT_FILENAME), as_attachment=True)
-        #     else:
-        #         return render_template('home.html')
 
     return render_template('home.html')
 
@@ -75,49 +69,58 @@ def home():
 def uploaded():
     global image, slider
 
-    if request.method == 'POST':
-        enhance_button = request.form.get('enhance_button')
-
-        blur_button = request.form.get('blur_button')
-        sharpen_button = request.form.get('sharpen_button')
-        edge_button = request.form.get('edge_button')
-        smooth_button = request.form.get('smooth_button')
-
-        rotate_button = request.form.get('rotate_button')
-        resize_button = request.form.get('resize_button')
-        crop_button = request.form.get('crop_button')
-
-        if enhance_button:
-            slider = {key: float(request.form.get(key)) for key, value in slider.items()}
-            apply_enhancers(image, os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), slider)
-
-        if blur_button:
-            apply_blur(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), blur_button)
-        elif sharpen_button:
-            apply_sharpen(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), sharpen_button)
-        elif edge_button:
-            apply_edge_enhance(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), edge_button)
-        elif smooth_button:
-            apply_smooth(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), smooth_button)
-
-        if rotate_button:
-            angle = int(request.form.get('angle'))
-            rotate_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), angle)
-        elif resize_button:
-            n_width = int(request.form.get('width'))
-            n_height = int(request.form.get('height'))
-            resize_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), n_width, n_height)
-        elif crop_button:
-            start_x = int(request.form.get('start_x'))
-            start_y = int(request.form.get('start_y'))
-            end_x = int(request.form.get('end_x'))
-            end_y = int(request.form.get('end_y'))
-            crop_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), start_x, start_y, end_x, end_y)
-
-        if any([blur_button, sharpen_button, edge_button, smooth_button, rotate_button, resize_button, crop_button]):
-            refresh_parameters(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
-
     if INPUT_FILENAME:
+        if request.method == 'POST':
+            # Nav
+            original_button = request.form.get('original_button')
+            download_button = request.form.get('download_button')
+            # Sliders
+            enhance_button = request.form.get('enhance_button')
+            # Filters
+            blur_button = request.form.get('blur_button')
+            sharpen_button = request.form.get('sharpen_button')
+            edge_button = request.form.get('edge_button')
+            smooth_button = request.form.get('smooth_button')
+            # Rotate/resize/crop
+            rotate_button = request.form.get('rotate_button')
+            resize_button = request.form.get('resize_button')
+            crop_button = request.form.get('crop_button')
+
+            if original_button:
+                dupe_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), 'replace')
+            if download_button:
+                return send_file(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), as_attachment=True)
+
+            if enhance_button:
+                slider = {key: float(request.form.get(key)) for key, value in slider.items()}
+                apply_enhancers(image, os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), slider)
+
+            if blur_button:
+                apply_blur(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), blur_button)
+            elif sharpen_button:
+                apply_sharpen(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), sharpen_button)
+            elif edge_button:
+                apply_edge_enhance(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), edge_button)
+            elif smooth_button:
+                apply_smooth(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), smooth_button)
+
+            if rotate_button:
+                angle = int(request.form.get('angle'))
+                rotate_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), angle)
+            elif resize_button:
+                n_width = int(request.form.get('width'))
+                n_height = int(request.form.get('height'))
+                resize_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), n_width, n_height)
+            elif crop_button:
+                start_x = int(request.form.get('start_x'))
+                start_y = int(request.form.get('start_y'))
+                end_x = int(request.form.get('end_x'))
+                end_y = int(request.form.get('end_y'))
+                crop_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), start_x, start_y, end_x, end_y)
+
+            if any([original_button, blur_button, sharpen_button, edge_button, smooth_button, rotate_button, resize_button, crop_button]):
+                refresh_parameters(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
+
         return render_template('uploaded.html', slider=slider, width=width, height=height, filename=INPUT_FILENAME)
     else:
         return render_template('uploaded.html', slider=slider)
