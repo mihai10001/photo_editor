@@ -64,7 +64,7 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/uploaded', methods=['POST'])
+@app.route('/uploaded', methods=['GET', 'POST'])
 def uploaded():
     global image, slider
 
