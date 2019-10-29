@@ -1,5 +1,5 @@
 import os
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, send_file
+from flask import Flask, render_template, request, redirect, url_for, send_file
 from werkzeug.utils import secure_filename
 from pillow import load_image, dupe_image, get_default_slider, apply_enhancers
 from pillow import apply_blur, apply_sharpen, apply_edge_enhance, apply_smooth
@@ -11,7 +11,6 @@ INPUT_FILENAME = ''
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-bp = Blueprint('photo_editor', __name__, template_folder='templates', static_folder='static', static_url_path='/static')
 
 
 def allowed_file(filename):
@@ -37,7 +36,7 @@ def add_header(response):
     return response
 
 
-@bp.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def home():
     global INPUT_FILENAME
 
@@ -60,12 +59,12 @@ def home():
                 file.save(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
                 dupe_image(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), 'copy')
                 refresh_parameters(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
-                return redirect(url_for('photo_editor.uploaded'))
+                return redirect(url_for('uploaded'))
 
     return render_template('home.html')
 
 
-@bp.route('/uploaded', methods=['GET', 'POST'])
+@app.route('/uploaded', methods=['POST'])
 def uploaded():
     global image, slider
 
@@ -125,8 +124,6 @@ def uploaded():
     else:
         return render_template('uploaded.html', slider=slider)
 
-
-app.register_blueprint(bp, url_prefix='/photo_editor')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=False, port=os.environ.get('PORT'))
