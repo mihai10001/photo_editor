@@ -1,5 +1,6 @@
 from PIL import Image, ImageFilter, ImageEnhance
 from shutil import copyfile
+import colorsys
 
 
 def load_image(image_path):
@@ -21,6 +22,10 @@ def get_default_slider():
     return {'color': 1, 'bright': 1, 'contrast': 1, 'sharp': 1}
 
 
+def get_default_hue_angle():
+    return {'hue_angle': 0}
+
+
 def get_image_size(image):
     return image.width, image.height
 
@@ -35,6 +40,27 @@ def apply_enhancers(image, image_path, slider):
     image = contraster.enhance(slider['contrast'])
     sharper = ImageEnhance.Sharpness(image)
     image = sharper.enhance(slider['sharp'])
+
+    image.save(image_path)
+
+
+# HUE [ inspired by: https://stackoverflow.com/questions/24874765 ]
+def get_dominant_colors(colors_count=3):
+    colors = image.getcolors(maxcolors=width * height)
+    return sorted(colors, reverse=True)[:colors_count]
+
+
+def apply_hue_shift(image, hue_angle):
+    width, height = get_image_size(image)
+    ld = image.load()
+
+    for i in range(width):
+        for j in range(height):
+            r,g,b = ld[i, j]
+            h,s,v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
+            h = (h + hue_angle/360.0) % 1.0
+            r,g,b = colorsys.hsv_to_rgb(h, s, v)
+            ld[i, j] = (int(r * 255.9999), int(g * 255.9999), int(b * 255.9999))
 
     image.save(image_path)
 

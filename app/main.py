@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, send_file
 from werkzeug.utils import secure_filename
-from pillow import load_image, dupe_image, get_default_slider, apply_enhancers
+from pillow import load_image, dupe_image, get_default_slider, get_default_hue_angle, apply_enhancers, apply_hue_shift
 from pillow import apply_blur, apply_sharpen, apply_edge_enhance, apply_smooth
 from pillow import get_image_size, rotate_image, resize_image, crop_image
 
@@ -18,12 +18,13 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-image, slider = None, None
+image, slider, hue_angle = None, None, None
 width, height = 0, 0
 def refresh_parameters(image_path):
     global image, slider, width, height
     image = load_image(image_path)
     slider = get_default_slider()
+    hue_angle = get_default_hue_angle()
     width, height = get_image_size(image)
 
 
@@ -66,7 +67,7 @@ def home():
 
 @app.route('/uploaded', methods=['GET', 'POST'])
 def uploaded():
-    global image, slider
+    global image, slider, hue_angle
 
     if INPUT_FILENAME:
         if request.method == 'POST':
@@ -75,6 +76,8 @@ def uploaded():
             download_button = request.form.get('download_button')
             # Sliders
             enhance_button = request.form.get('enhance_button')
+            # Hue
+            hue_button = request.form.get('hue_button')
             # Filters
             blur_button = request.form.get('blur_button')
             sharpen_button = request.form.get('sharpen_button')
@@ -93,6 +96,9 @@ def uploaded():
             if enhance_button:
                 slider = {key: float(request.form.get(key)) for key, value in slider.items()}
                 apply_enhancers(image, os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), slider)
+            if hue_button:
+                hue_angle = request.form.get('hue_angle')
+                apply_hue_shift(image, hue_angle)
 
             if blur_button:
                 apply_blur(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME), blur_button)
@@ -120,9 +126,9 @@ def uploaded():
             if any([original_button, blur_button, sharpen_button, edge_button, smooth_button, rotate_button, resize_button, crop_button]):
                 refresh_parameters(os.path.join(UPLOAD_FOLDER, INPUT_FILENAME))
 
-        return render_template('uploaded.html', slider=slider, width=width, height=height, filename=INPUT_FILENAME)
+        return render_template('uploaded.html', slider=slider, hue_angle=hue_angle, width=width, height=height, filename=INPUT_FILENAME)
     else:
-        return render_template('uploaded.html', slider=slider)
+        return render_template('uploaded.html', slider=slider, hue_angle=hue_angle)
 
 
 if __name__ == "__main__":
