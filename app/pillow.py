@@ -22,10 +22,6 @@ def get_default_slider():
     return {'color': 1, 'bright': 1, 'contrast': 1, 'sharp': 1}
 
 
-def get_default_hue_angle():
-    return {'hue_angle': 0}
-
-
 def get_image_size(image):
     return image.width, image.height
 
@@ -45,21 +41,24 @@ def apply_enhancers(image, image_path, slider):
 
 
 # HUE [ inspired by: https://stackoverflow.com/questions/24874765 ]
-def get_dominant_colors(colors_count=3):
+def get_dominant_colors(image_path, colors_count=3):
+    image = load_image(image_path)
+    width, height = get_image_size(image)
     colors = image.getcolors(maxcolors=width * height)
     return sorted(colors, reverse=True)[:colors_count]
 
 
-def apply_hue_shift(image, hue_angle):
+def apply_hue_shift(image_path, hue_angle):
+    image = load_image(image_path)
     width, height = get_image_size(image)
     ld = image.load()
 
     for i in range(width):
         for j in range(height):
-            r,g,b = ld[i, j]
-            h,s,v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
+            r, g, b = ld[i, j]
+            h, s, v = colorsys.rgb_to_hsv(r/255., g/255., b/255.)
             h = (h + hue_angle/360.0) % 1.0
-            r,g,b = colorsys.hsv_to_rgb(h, s, v)
+            r, g, b = colorsys.hsv_to_rgb(h, s, v)
             ld[i, j] = (int(r * 255.9999), int(g * 255.9999), int(b * 255.9999))
 
     image.save(image_path)

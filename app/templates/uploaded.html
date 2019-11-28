@@ -159,6 +159,44 @@
       <div class="row my-2">
         <div class="col-sm-12">
           <div class="card h5">
+            <div class="card-header"><b>Hue shift</b></div>
+            <div class="card-body" style="font-size: 0.8rem">
+              <form method="POST">
+                <div for="color"><b>Hue</b></div>
+                <small>Ranges from -180° to 180°</small>
+                <div class="row">
+                  <div class="col-9">
+                    <input type="range" class="custom-range" min="-180" max="180" step="1" value="0" id="hue_angle" name="hue_angle" onchange="updateTextInput('hue_value', this.value);">
+                  </div>
+                  <div class="col-3">
+                    <span id="hue_value" style="color: slateblue">0</span>
+                  </div>
+                </div>
+
+                {% if filename %}
+                <div class="row">
+                  <div class="col-5 mx-auto p-2" style="background-color: rgb{{ colors[0][1] }}">
+                  </div>
+                  <div class="col-2 p-2" style="background-color: rgb{{ colors[1][1] }}">
+                  </div>
+                  <div class="col-1 mx-auto p-2" style="background-color: rgb{{ colors[2][1] }}">
+                  </div>
+                </div>
+                {% else %}
+                <div>No image uploaded yet !</div>
+                {% endif %}
+
+                <button type="submit" name="hue_button" value="hue" class="btn btn-block btn-dark mt-2"><b>Apply</b></button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row my-2">
+        <div class="col-sm-12">
+          <div class="card h5">
             <div class="card-header"><b>Apply filters</b></div>
             <a href="#demo1" class="btn btn-dark" data-toggle="collapse" style="margin: 1.25rem"><b>Open / Close</b></a>
             <div class="card-body collapse" id="demo1">
