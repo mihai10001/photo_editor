@@ -41,7 +41,7 @@ def apply_enhancers(image, image_path, slider):
 
 
 # HUE [ inspired by: https://stackoverflow.com/questions/24874765 ]
-def get_dominant_colors(image_path, colors_count=3):
+def get_dominant_colors(image_path, colors_count=5):
     image = load_image(image_path)
     width, height = get_image_size(image)
     colors = image.getcolors(maxcolors=width * height)

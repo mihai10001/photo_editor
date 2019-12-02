@@ -35,6 +35,20 @@
       padding-bottom: 0;
     }
 
+    @keyframes rainbow{
+      0%{color: orange;}
+      10%{color: purple;}
+      20%{color: red;}
+      30%{color: CadetBlue;}
+      40%{color: yellow;}
+      50%{color: coral;}
+      60%{color: green;}
+      70%{color: cyan;}
+      80%{color: DeepPink;}
+      90%{color: DodgerBlue;}
+      100%{color: orange;}
+    }
+
     </style>
 
     <!-- Bootstrap CSS -->
@@ -105,7 +119,7 @@
                   <div class="col-9">
                     <input type="range" class="custom-range" min="0" max="3" step="0.1" value={{ slider['color'] }} id="color" name="color" onchange="updateTextInput('color_value', this.value);">
                   </div>
-                  <div class="col-3">
+                  <div class="col-3 text-center">
                     <span id="color_value" style="color: slateblue">1</span>
                   </div>
                 </div>
@@ -118,7 +132,7 @@
                   <div class="col-9">
                     <input type="range" class="custom-range" min="0" max="3" step="0.1" value={{ slider['bright'] }} id="brightness" name="bright" onchange="updateTextInput('brightness_value', this.value);">
                   </div>
-                  <div class="col-3">
+                  <div class="col-3 text-center">
                     <span id="brightness_value" style="color: slateblue">1</span>
                   </div>
                 </div>
@@ -131,7 +145,7 @@
                   <div class="col-9">
                     <input type="range" class="custom-range" min="0" max="3" step="0.1" value={{ slider['contrast'] }} id="contrast" name="contrast" onchange="updateTextInput('contrast_value', this.value);">
                   </div>
-                  <div class="col-3">
+                  <div class="col-3 text-center">
                     <span id="contrast_value" style="color: slateblue">1</span>
                   </div>
                 </div>
@@ -143,7 +157,7 @@
                   <div class="col-9">
                     <input type="range" class="custom-range" min="0" max="3" step="0.1" value={{ slider['sharp'] }} id="sharpness" name="sharp" onchange="updateTextInput('sharpness_value', this.value);">
                   </div>
-                  <div class="col-3">
+                  <div class="col-3 text-center">
                     <span id="sharpness_value" style="color: slateblue">1</span>
                   </div>
                 </div>
@@ -159,27 +173,31 @@
       <div class="row my-2">
         <div class="col-sm-12">
           <div class="card h5">
-            <div class="card-header"><b>Hue shift</b></div>
+            <div class="card-header" style="animation: rainbow 20s infinite"><b>Hue shift</b></div>
             <div class="card-body" style="font-size: 0.8rem">
               <form method="POST">
                 <div for="color"><b>Hue</b></div>
                 <small>Ranges from -180° to 180°</small>
-                <div class="row">
+                <div class="row mb-2">
                   <div class="col-9">
-                    <input type="range" class="custom-range" min="-180" max="180" step="1" value="0" id="hue_angle" name="hue_angle" onchange="updateTextInput('hue_value', this.value);">
+                    <input type="range" class="custom-range" min="-180" max="180" step="1" value="0" id="hue_angle" name="hue_angle" onchange="updateTextInput('hue_value', this.value); updateColorValues('domin_colors', this.value);">
                   </div>
-                  <div class="col-3">
+                  <div class="col-3 text-center">
                     <span id="hue_value" style="color: slateblue">0</span>
                   </div>
                 </div>
 
                 {% if filename %}
-                <div class="row">
-                  <div class="col-5 mx-auto p-2" style="background-color: rgb{{ colors[0][1] }}">
+                <div class="row" id="domin_colors">
+                  <div class="col-4 ml-3 p-2 rounded" style="background-color: rgb{{ colors[0][1] }}">
                   </div>
-                  <div class="col-2 p-2" style="background-color: rgb{{ colors[1][1] }}">
+                  <div class="col-2 mx-auto p-2 rounded" style="background-color: rgb{{ colors[1][1] }}">
                   </div>
-                  <div class="col-1 mx-auto p-2" style="background-color: rgb{{ colors[2][1] }}">
+                  <div class="col-2 mx-auto p-2 rounded" style="background-color: rgb{{ colors[2][1] }}">
+                  </div>
+                  <div class="col-1 mx-auto p-2 rounded" style="background-color: rgb{{ colors[3][1] }}">
+                  </div>
+                  <div class="col-1 mr-3 p-2 rounded" style="background-color: rgb{{ colors[4][1] }}">
                   </div>
                 </div>
                 {% else %}
@@ -350,6 +368,15 @@
       updateTextInput('brightness_value', {{ slider['bright'] }});
       updateTextInput('contrast_value', {{ slider['contrast'] }});
       updateTextInput('sharpness_value', {{ slider['sharp'] }});
+    </script>
+    <script>
+      function updateColorValues(id, val) {
+          parent = document.getElementById(id);
+          var i;
+
+          for(i = 0; i < 5; i++)
+            parent.children[i].style.filter = 'hue-rotate(' + val +'deg)';
+        }
     </script>
     <script>
       var image = document.getElementById('cropper');
