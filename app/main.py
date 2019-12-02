@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from pillow import load_image, dupe_image, get_default_slider, apply_enhancers, apply_hue_shift, get_dominant_colors
 from pillow import apply_blur, apply_sharpen, apply_edge_enhance, apply_smooth
 from pillow import get_image_size, rotate_image, resize_image, crop_image
+from cleanup import remove_static_files
 
 UPLOAD_FOLDER = os.getcwd() + '/static'
 ALLOWED_EXTENSIONS = set(['png', 'jpeg', 'jpg'])
@@ -11,6 +12,7 @@ INPUT_FILENAME = ''
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 128 * 1024 * 1024
 
 
 def allowed_file(filename):
@@ -41,6 +43,7 @@ def add_header(response):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     global INPUT_FILENAME
+    remove_static_files()
 
     if request.method == 'POST':
         submit_button = request.form.get('submit_button')
