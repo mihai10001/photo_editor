@@ -50,6 +50,7 @@ def get_dominant_colors(image_path, colors_count=5):
 
 def apply_hue_shift(image_path, hue_angle):
     image = load_image(image_path)
+    image = image.convert('RGB')
     width, height = get_image_size(image)
     ld = image.load()
 
