@@ -6,7 +6,7 @@ I chose to make the implementation myself by linking web requests ( buttons, sli
 
 
 ### Implementation  
-SPA application made with Python, using the Flask framework in order to build the backend and serve static content (HTML pages)  
+Web application made with Python, using the Flask framework in order to build the backend and serve static content (HTML pages)  
 Uses the well known Python library Pillow for the image processing  
 
 ### How to run
